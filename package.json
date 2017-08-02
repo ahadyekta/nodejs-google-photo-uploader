@@ -1,0 +1,19 @@
+{
+  "name": "photo-backup",
+  "version": "1.0.0",
+  "description": "backup photos on google",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "photo",
+    "picasa"
+  ],
+  "author": "Ahad Nemati",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.3",
+    "picasa": "^1.0.6"
+  }
+}
