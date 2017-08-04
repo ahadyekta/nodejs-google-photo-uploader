@@ -1,0 +1,9 @@
+{
+    "accessToken": "ya29.GludBOpgecoHb3drjF9Lc8rxur7mXMjSWu4ETAUmHzd_rpephRLeEQi0d2r0OrD4FmA0Wqm2WYcp2VRMggGrfa2nQwFU2NcdUuAQLD5Tg-N0nLo_WjW2kfpZvBbf",
+    "refreshToken" : "1/sUjbQ6beAK6izgh6sB8dI_MriVV23mEMF-_liuoncOY",
+    "clientId"     : "506758245884-96no3ods579omcjsommu5d64e2e3bhkr.apps.googleusercontent.com",
+    "clientSecret" : "WTZWOGLRNdS0iTJNCEyWtaPA",
+    "redirectURI"  : "http://localhost:4000/callback",
+    "albumId"      : "6450026376022553873"
+}
+
