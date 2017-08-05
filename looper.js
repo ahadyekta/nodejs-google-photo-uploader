@@ -1,9 +1,17 @@
 var fs = require('fs');
 
+fs.writeFile("/home/ahad/projects/photo-backup/" + Math.random(), "my node", function(err) {
+if(err) {
+return console.log(err);
+}
+console.log("The file was saved!");
+}); 
+
+
 var Picasa = require('picasa')
 var picasa = new Picasa();
 
- var dataConfig = fs.readFileSync('./config.json', 'utf8');
+ var dataConfig = fs.readFileSync(__dirname+'/config.json', 'utf8');
  var config = JSON.parse(dataConfig); //now it an object
 console.log(config);
 
@@ -24,8 +32,8 @@ var options = {}
 // getAlbum();  
 
 
-var walkPath = './photos';
-var logPath = './logs/';
+var walkPath = config.imagePath;
+var logPath = __dirname+'/logs/';
 
 var readLog= function(albumName){
          
@@ -46,7 +54,7 @@ var walk = function (dir, done) {
 
         (function next () {
             var file = list[i++];
-
+            console.log('next:',file);
             if (!file) {
                 return done(null);
             }
@@ -95,27 +103,28 @@ var walk = function (dir, done) {
                             }else{
                                 next();
                             }
-
                    
                 } else {
+                     console.log('up:',file);
                     // check there is not in json
                     // extract name and album and upload photo to it
                     //save to log file 
                     var logNameArray = file.split('/'); 
-                    var obj =readLog(logNameArray[2]);
+                    var albumName = logNameArray[((logNameArray.length)-2)];
+                    var obj =readLog(albumName);
                     if(obj.photos.indexOf(list[i-1])<0){
                         
 
-                        console.log('upload image with the name of '+list[i-1]+' in '+logNameArray[2]); 
+                        console.log('upload image with the name of '+list[i-1]+' in '+albumName); 
                         
                         //////////////////
                         
-                        var path = __dirname + "/photos/"+logNameArray[2]+"/"+list[i-1];
-                        console.log('path:',path);
-                        fs.readFile(path, (err, binary) => {
+                        // var path = __dirname + "/photos/"+albumName+"/"+list[i-1];
+                        console.log('path:',file);
+                        fs.readFile(file, (err, binary) => {
                             var photoData = {
                                 title       : list[i-1],
-                                summary     : logNameArray[2],
+                                summary     : albumName,
                                 contentType : 'image/jpeg',
                                 binary      : binary
                             }
@@ -130,25 +139,28 @@ var walk = function (dir, done) {
                                         picasa.renewAccessToken(config, config.refreshToken, (error, accessToken) => {
                                             console.log('new ',error, accessToken);
                                             if(!error){
-                                                config.accessToken =    accessToken;
-                                                fs.writeFileSync("./config.json", JSON.stringify(config));
-                                                postImage();
+                                                config.accessToken =  accessToken;
+                                                fs.writeFileSync(__dirname+"/config.json", JSON.stringify(config));
+                                                
                                             }
-                                            
+                                            postImage();
                                         })
+                                    }else{
+                                        next();
                                     }
                                 }else{
                                     var logNameArray = file.split('/'); 
-                                    var obj =readLog(logNameArray[2]);
+                                    var albumName = logNameArray[((logNameArray.length)-2)];
+                                    var obj =readLog(albumName);
                                     obj.photos.push(list[i-1]);
                                     if(i==list.length){
                                         obj.status = "complete";
                                     }
-                                    fs.writeFileSync(logPath+logNameArray[2]+".txt", JSON.stringify(obj));
-
+                                    fs.writeFileSync(logPath+albumName+".txt", JSON.stringify(obj));
+                                    next();
                                 }
                                                                 
-                                next();
+                                
 
                             })
                            }
@@ -156,6 +168,8 @@ var walk = function (dir, done) {
                             
                         })
                         //////////////////
+                    }else{
+                        next();
                     }
                 }
             });

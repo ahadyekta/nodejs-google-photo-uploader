@@ -19,10 +19,11 @@ var server = app.listen(app.get('port'), function() {
 
 
 app.get('/', function(req, res) {
-    var authURL = picasa.getAuthURL(config)
+    var authURL = picasa.getAuthURL(config);
     if(authURL){
-        console.log(authURL);
-        res.send(authURL);
+        res.redirect(authURL);
+    }else{
+        res.send('there is an unknown error');
     }
 
 });
@@ -41,11 +42,12 @@ app.get('/callback', function(req, res) {
 
      fs.writeFileSync("./config.json", JSON.stringify(config));
 
-    res.send('access:'+ accessToken +"<br>"+'refresh'+refreshToken);
+    res.send('config file was edited with this data: <br> accessToken:'+ accessToken +"<br>"+'refreshToken'+refreshToken+'<br> Now run "node looper" in terminal to upload');
 
     })
 
 });
+
 app.get('/albums', function(req, res) {
     var options = {}
 
@@ -56,24 +58,3 @@ app.get('/albums', function(req, res) {
 
 
 });
-
-
-app.get('/upload', function(req, res) {
-    var  albumId = '5796511539998971217'
-
-    fs.readFile(__dirname + '/photos/album1/IMG_4459.JPG', (err, binary) => {
-    const photoData = {
-        title       : 'zeinab-title',
-        summary     : 'zeinab-summary',
-        contentType : 'image/jpeg',
-        binary      : binary
-    }
-
-    picasa.postPhoto(access, albumId, photoData, (error, response) => {
-        console.log(error, response)
-    })
-    })
-
-
-});
-
